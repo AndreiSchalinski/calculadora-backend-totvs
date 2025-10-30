@@ -60,7 +60,11 @@ public class App {
 
         BigDecimal dias = new BigDecimal(ChronoUnit.DAYS.between(primeiroDiaMes, ultimoDiaMes));
 
-        System.out.println(dias);
+        BigDecimal primeiroMembro = null;
+
+        BigDecimal segundoMembro = dias.divide(new BigDecimal("360"), 10, RoundingMode.HALF_UP).subtract(BigDecimal.ONE);
+
+        System.out.println(segundoMembro);
         
         return new BigDecimal(0);
     }
