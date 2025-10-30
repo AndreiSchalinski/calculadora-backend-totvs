@@ -14,6 +14,10 @@ public class App {
 
         int totalMeses = calculaIntervaloTotalMeses(dataInicio, dataFim);
 
+        BigDecimal taxaJuros = new BigDecimal("0.07"); //já com acréscimo
+
+        BigDecimal baseDias = new BigDecimal("360");
+
         // ---------------------Inputs de form front-end acima-----------------------
 
         BigDecimal principalAmortizacao = totalEmprestimo.divide(new BigDecimal(totalMeses), 10, RoundingMode.HALF_UP);
@@ -38,24 +42,46 @@ public class App {
 
             principalSaldo = calculaPrincipalSaldo(parcela, principalSaldo, amortizacaoAtual);
 
-            imprimirTabela(parcela, primeiroDiaMes, ultimoDiaMes, amortizacaoAtual, principalSaldo.setScale(2, RoundingMode.HALF_UP));
+            BigDecimal jurosProvisao = calcularJurosProvisao(taxaJuros, primeiroDiaMes, ultimoDiaMes, baseDias, amortizacaoAtual);
+
+            imprimirTabela(parcela, primeiroDiaMes, ultimoDiaMes, amortizacaoAtual, principalSaldo.setScale(2, RoundingMode.HALF_UP), jurosProvisao);
 
             dataInicio = dataInicio.plusMonths(1);
         }
 
     }
 
+    public static BigDecimal calcularJurosProvisao(
+            BigDecimal taxaJuros,
+            LocalDate primeiroDiaMes,
+            LocalDate ultimoDiaMes,
+            BigDecimal baseDias,
+            BigDecimal principalSaldo) {
+
+        BigDecimal dias = new BigDecimal(ChronoUnit.DAYS.between(primeiroDiaMes, ultimoDiaMes));
+
+        System.out.println(dias);
+        
+        return new BigDecimal(0);
+    }
+
     public static int calculaIntervaloTotalMeses(LocalDate dataInicial, LocalDate dataFinal) {
         return (int) ChronoUnit.MONTHS.between(dataInicial, dataFinal);
     }
 
-    public static void imprimirTabela(int parcela, LocalDate primeiroDiaMes, LocalDate ultimoDiaMes,
-            BigDecimal principalAmortizacao, BigDecimal principalSaldo) {
+    public static int calculaDiferencaDias(LocalDate dataInicial, LocalDate dataFinal) {
+        return (int) ChronoUnit.DAYS.between(dataInicial, dataFinal);
+    }
 
-        if (true) {
+    public static void imprimirTabela(int parcela, LocalDate primeiroDiaMes, LocalDate ultimoDiaMes,
+            BigDecimal principalAmortizacao, BigDecimal principalSaldo, BigDecimal jurosProvisao) {
+
+        if (false) {
             System.out
-                    .println(parcela + " | " + primeiroDiaMes + " | " + principalAmortizacao + " | " + principalSaldo);
-            System.out.println(parcela + " | " + ultimoDiaMes + " | " + principalAmortizacao + " | " + principalSaldo);
+                    .println(parcela + " | " + primeiroDiaMes + " | " + principalAmortizacao + " | " + principalSaldo
+                            + " | " + jurosProvisao);
+            System.out.println(parcela + " | " + ultimoDiaMes + " | " + principalAmortizacao + " | " + principalSaldo
+                    + " | " + jurosProvisao);
         }
 
     }
@@ -69,4 +95,7 @@ public class App {
             return principalSaldo.subtract(amortizacaoAtual);
         }
     }
+
+    
+
 }
