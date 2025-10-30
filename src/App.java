@@ -42,7 +42,7 @@ public class App {
 
             principalSaldo = calculaPrincipalSaldo(parcela, principalSaldo, amortizacaoAtual);
 
-            BigDecimal jurosProvisao = calcularJurosProvisao(taxaJuros, primeiroDiaMes, ultimoDiaMes, baseDias, amortizacaoAtual);
+            BigDecimal jurosProvisao = calcularJurosProvisao(taxaJuros, primeiroDiaMes, ultimoDiaMes, baseDias, principalSaldo);
 
             imprimirTabela(parcela, primeiroDiaMes, ultimoDiaMes, amortizacaoAtual, principalSaldo.setScale(2, RoundingMode.HALF_UP), jurosProvisao);
 
@@ -58,15 +58,19 @@ public class App {
             BigDecimal baseDias,
             BigDecimal principalSaldo) {
 
-        BigDecimal dias = new BigDecimal(ChronoUnit.DAYS.between(primeiroDiaMes, ultimoDiaMes));
+        long dias = ChronoUnit.DAYS.between(primeiroDiaMes, ultimoDiaMes);
 
-        BigDecimal primeiroMembro = null;
+        BigDecimal expoenteTaxaJuros = new BigDecimal(dias).divide(baseDias, 10, RoundingMode.HALF_UP);
 
-        BigDecimal segundoMembro = dias.divide(new BigDecimal("360"), 10, RoundingMode.HALF_UP).subtract(BigDecimal.ONE);
+        double produtoTaxaJuro = Math.pow(taxaJuros.add(BigDecimal.ONE).doubleValue(), expoenteTaxaJuros.doubleValue());
 
-        System.out.println(segundoMembro);
+        BigDecimal potencia = BigDecimal.valueOf(produtoTaxaJuro);
+
+        BigDecimal primeiroMembroFator = potencia.subtract(BigDecimal.ONE);
+
+        BigDecimal segundoMembroMultiplicado = primeiroMembroFator.multiply(principalSaldo).setScale(2, RoundingMode.HALF_UP);
         
-        return new BigDecimal(0);
+        return segundoMembroMultiplicado;
     }
 
     public static int calculaIntervaloTotalMeses(LocalDate dataInicial, LocalDate dataFinal) {
@@ -80,7 +84,7 @@ public class App {
     public static void imprimirTabela(int parcela, LocalDate primeiroDiaMes, LocalDate ultimoDiaMes,
             BigDecimal principalAmortizacao, BigDecimal principalSaldo, BigDecimal jurosProvisao) {
 
-        if (false) {
+        if (true) {
             System.out
                     .println(parcela + " | " + primeiroDiaMes + " | " + principalAmortizacao + " | " + principalSaldo
                             + " | " + jurosProvisao);
