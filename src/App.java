@@ -16,7 +16,7 @@ public class App {
 
         // ---------------------Inputs de form front-end acima-----------------------
 
-        BigDecimal principalAmortizacao = totalEmprestimo.divide(new BigDecimal(totalMeses), 2, RoundingMode.HALF_UP);
+        BigDecimal principalAmortizacao = totalEmprestimo.divide(new BigDecimal(totalMeses), 10, RoundingMode.HALF_UP);
 
         BigDecimal principalSaldo = new BigDecimal("140000.00");
         
@@ -36,9 +36,9 @@ public class App {
                 amortizacaoAtual = principalSaldo;
             }
 
-            principalSaldo = calculaPrincipalSaldo(parcela, principalSaldo, amortizacaoAtual.setScale(2, RoundingMode.HALF_UP));
+            principalSaldo = calculaPrincipalSaldo(parcela, principalSaldo, amortizacaoAtual);
 
-            imprimirTabela(parcela, primeiroDiaMes, ultimoDiaMes, principalAmortizacao, principalSaldo);
+            imprimirTabela(parcela, primeiroDiaMes, ultimoDiaMes, amortizacaoAtual, principalSaldo.setScale(2, RoundingMode.HALF_UP));
 
             dataInicio = dataInicio.plusMonths(1);
         }
@@ -61,12 +61,12 @@ public class App {
     }
 
     public static BigDecimal calculaPrincipalSaldo(int parcela, BigDecimal principalSaldo,
-            BigDecimal principalAmortizacao) {
+            BigDecimal amortizacaoAtual) {
 
         if (parcela < 2) {
             return principalSaldo;
         } else {
-            return principalSaldo.subtract(principalAmortizacao).setScale(2, RoundingMode.HALF_UP);
+            return principalSaldo.subtract(amortizacaoAtual);
         }
     }
 }
